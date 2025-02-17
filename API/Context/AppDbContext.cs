@@ -16,6 +16,6 @@ namespace API.Context
             //config.cs'leri calistiralim migration alabilmek icin gerekli
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-        DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
