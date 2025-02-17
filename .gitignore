@@ -1,0 +1,8 @@
+# Node.js & React
+node_modules/
+dist/
+.env
+
+# .NET
+bin/
+obj/
