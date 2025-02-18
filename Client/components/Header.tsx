@@ -1,7 +1,14 @@
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
-function Header(props: any) {
+function Header() {
     return (
-        <h2>Header {props.products.length}</h2>
+        <>
+            <AppBar>
+                <Toolbar>
+                    <Typography variant="h6">E-Commerce</Typography>
+                </Toolbar>
+            </AppBar>
+        </>
     );
 }
 
