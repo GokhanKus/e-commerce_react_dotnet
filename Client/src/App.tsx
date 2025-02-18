@@ -1,4 +1,6 @@
-const products = [
+import { useState } from "react";
+
+const productList = [
   { id: 1, name: "Bilgisayar", price: 24000, isActive: true },
   { id: 2, name: "Klavye", price: 2400, isActive: false },
   { id: 3, name: "Camera", price: 2000, isActive: true },
@@ -24,16 +26,23 @@ function Header() {
 }
 
 function ProductList() {
+  const [products, setProducts] = useState(productList);
+
+  const addProduct = () => {
+    setProducts([...products, { id: Math.floor(Math.random() * 99999), name: "NewProduct", price: Math.floor(Math.random() * 999999), isActive: true }])
+  }
+
   return (
     <>
       <h3>ProductList</h3>
-      {
-        products.map(product => (
-          <ul>
+      <ul>
+        {
+          products.map(product => (
             <Product key={product.id} product={product} />
-          </ul>
-        ))
-      }
+          ))
+        }
+      </ul>
+      <button onClick={addProduct}>Add Product</button>
     </>
   );
 }
