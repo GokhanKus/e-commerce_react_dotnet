@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseCors(opt =>
 {
     //front end tarafında request atarken has been blocked by cors hatası alıyorduk lclhost 3000 adresinden(react front end) gelen isteklere izin verelim 

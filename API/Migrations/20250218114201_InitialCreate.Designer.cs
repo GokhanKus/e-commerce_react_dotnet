@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250217104736_ProductSeeding")]
-    partial class ProductSeeding
+    [Migration("20250218114201_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,61 +52,71 @@ namespace API.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Latest model smartphone with 128GB storage.",
-                            ImageUrl = "smartphone.jpg",
-                            Name = "Smartphone",
-                            Price = 499.99m,
-                            Stock = 500,
+                            Description = "Apple Watch Series",
+                            ImageUrl = "1.jpg",
+                            Name = "Apple Watch Series 1",
+                            Price = 70000m,
+                            Stock = 100,
                             isActive = true
                         },
                         new
                         {
                             Id = 2,
-                            Description = "High-performance laptop for gaming and development.",
-                            ImageUrl = "laptop.jpg",
-                            Name = "Laptop",
-                            Price = 1200.50m,
-                            Stock = 150,
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "2.jpg",
+                            Name = "Apple Watch Series 2",
+                            Price = 80000m,
+                            Stock = 100,
                             isActive = true
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Noise-canceling wireless earbuds with long battery life.",
-                            ImageUrl = "wireless_earbuds.jpg",
-                            Name = "Wireless Earbuds",
-                            Price = 99.99m,
-                            Stock = 2000,
-                            isActive = true
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "3.jpg",
+                            Name = "Apple Watch Series 3",
+                            Price = 90000m,
+                            Stock = 100,
+                            isActive = false
                         },
                         new
                         {
                             Id = 4,
-                            Description = "Stylish smart watch with fitness tracking features.",
-                            ImageUrl = "smart_watch.jpg",
-                            Name = "Smart Watch",
-                            Price = 199.99m,
-                            Stock = 850,
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "4.jpg",
+                            Name = "Xiaomi Redmi Watch 1",
+                            Price = 100000m,
+                            Stock = 100,
                             isActive = true
                         },
                         new
                         {
                             Id = 5,
-                            Description = "Ergonomic gaming chair for long hours of comfort.",
-                            ImageUrl = "gaming_chair.jpg",
-                            Name = "Gaming Chair",
-                            Price = 299.99m,
-                            Stock = 120,
-                            isActive = false
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "5.jpg",
+                            Name = "Xiaomi Redmi Watch 2",
+                            Price = 100000m,
+                            Stock = 100,
+                            isActive = true
                         },
                         new
                         {
                             Id = 6,
-                            Description = "Portable bluetooth speaker with great sound quality.",
-                            ImageUrl = "bluetooth_speaker.jpg",
-                            Name = "Bluetooth Speaker",
-                            Price = 59.99m,
-                            Stock = 1500,
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "6.jpg",
+                            Name = "Xiaomi Redmi Watch 3",
+                            Price = 100000m,
+                            Stock = 100,
+                            isActive = true
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Telefon açıklaması",
+                            ImageUrl = "7.jpg",
+                            Name = "Xiaomi Redmi Watch 4",
+                            Price = 100000m,
+                            Stock = 100,
                             isActive = true
                         });
                 });
