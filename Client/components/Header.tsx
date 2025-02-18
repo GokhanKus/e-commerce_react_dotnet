@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography } from '@mui/material';
 function Header() {
     return (
         <>
-            <AppBar>
+            <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6">E-Commerce</Typography>
                 </Toolbar>

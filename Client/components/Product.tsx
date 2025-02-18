@@ -7,10 +7,10 @@ interface Props {
 function Product({ product }: Props) {
     return (
         <>
-            {
-                product.isActive &&
-                <li>{product.name} {product.price}</li>
-            }
+            <div>
+                <h3> {product.name} </h3>
+                <p> {product.price} </p>
+            </div>
         </>
     );
 }
