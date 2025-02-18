@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IProduct } from '../model/IProduct'
 
 const productList = [
   { id: 1, name: "Bilgisayar", price: 24000, isActive: true },
@@ -26,7 +27,7 @@ function Header() {
 }
 
 function ProductList() {
-  const [products, setProducts] = useState(productList);
+  const [products, setProducts] = useState<IProduct[]>([]);
 
   //axios da kullanılabilir
   useEffect(() => {
@@ -36,7 +37,14 @@ function ProductList() {
   }, [])
 
   const addProduct = () => {
-    setProducts([...products, { id: Math.floor(Math.random() * 99999), name: "NewProduct", price: Math.floor(Math.random() * 999999), isActive: true }])
+    setProducts([...products,
+    {
+      id: Math.floor(Math.random() * 99999),
+      name: "NewProduct",
+      stock: 24,
+      price: Math.floor(Math.random() * 999999),
+      isActive: true
+    }])
   }
 
   return (
@@ -53,6 +61,7 @@ function ProductList() {
     </>
   );
 }
+
 function Product(props: any) {
 
   return (
