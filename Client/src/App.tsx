@@ -1,3 +1,11 @@
+const products = [
+  { id: 1, name: "Bilgisayar", price: 24000, isActive: true },
+  { id: 2, name: "Klavye", price: 2400, isActive: false },
+  { id: 3, name: "Camera", price: 2000, isActive: true },
+  { id: 4, name: "Keyboard", price: 4000, isActive: true },
+  { id: 5, name: "Mouse", price: 300, isActive: false },
+]
+
 function App() {
 
   return (
@@ -19,15 +27,25 @@ function ProductList() {
   return (
     <>
       <h3>ProductList</h3>
-      <Product />
-      <Product />
-      <Product />
+      {
+        products.map(product => (
+          <ul>
+            <Product key={product.id} product={product} />
+          </ul>
+        ))
+      }
     </>
   );
 }
-function Product() {
+function Product(props: any) {
+
   return (
-    <h4>Product</h4>
+    <>
+      {
+        props.product.isActive &&
+        <li>{props.product.name} {props.product.price}</li>
+      }
+    </>
   );
 }
 
