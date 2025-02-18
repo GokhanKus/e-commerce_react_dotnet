@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const productList = [
   { id: 1, name: "Bilgisayar", price: 24000, isActive: true },
@@ -27,6 +27,13 @@ function Header() {
 
 function ProductList() {
   const [products, setProducts] = useState(productList);
+
+  //axios da kullanılabilir
+  useEffect(() => {
+    fetch("http://localhost:5018/api/products")
+      .then(response => response.json())
+      .then(data => setProducts(data));
+  }, [])
 
   const addProduct = () => {
     setProducts([...products, { id: Math.floor(Math.random() * 99999), name: "NewProduct", price: Math.floor(Math.random() * 999999), isActive: true }])
