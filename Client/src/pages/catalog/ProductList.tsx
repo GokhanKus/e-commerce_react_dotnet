@@ -8,15 +8,19 @@ interface Props {
 
 function ProductList({ products }: Props) {
     return (
-        <Grid2 container spacing={2}>
-            {
-                products.map((product: IProduct) => (
-                    <Grid2 size={{ xs: 6, md: 4, lg: 3 }}>
-                        <Product key={product.id} product={product} />
+        <>
+
+
+            <Grid2 container spacing={2}>
+
+                {products.map((p: IProduct) => (
+                    <Grid2 key={p.id} size={{ xs: 12, md: 4, lg: 3 }}>
+                        <Product key={p.id} product={p} />
                     </Grid2>
-                ))
-            }
-        </Grid2>
+                ))}
+
+            </Grid2>
+        </>
     );
 }
 export default ProductList

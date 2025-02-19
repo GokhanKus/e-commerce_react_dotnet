@@ -32,7 +32,7 @@ function Header() {
                         <Stack direction="row" spacing={2}>
                             {
                                 links.map(link =>
-                                    <Button sx={navStyles} component={NavLink} to={link.to}>{link.title}</Button>
+                                    <Button key={link.to} sx={navStyles} component={NavLink} to={link.to}>{link.title}</Button>
                                 )
                             }
                         </Stack>
