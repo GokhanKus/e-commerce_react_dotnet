@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Router";
+import { DateRange } from "@mui/icons-material";
 axios.defaults.baseURL = "http://localhost:5018/api/";
 
 axios.interceptors.response.use(response => {
@@ -11,6 +12,13 @@ axios.interceptors.response.use(response => {
     switch (status) {
 
         case HttpStatusCode.BadRequest.valueOf():
+            if (data.errors) {
+                const modelErrors: string[] = [];
+                for (const key in data.errors) {
+                    modelErrors.push(data.errors[key]);
+                }
+                throw modelErrors;
+            }
             toast.error(data.title);
             break;
         case HttpStatusCode.Unauthorized.valueOf():
