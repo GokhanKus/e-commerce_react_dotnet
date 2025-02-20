@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router"
 import { IProduct } from "../../model/IProduct";
 import requests from "../../api/request";
+import NotFound from "../../errors/NotFound";
 
 function ProductDetails() {
     const { id } = useParams<{ id: string }>(); //sayfaya gelen route parametresini almak icin use params kullaniriz
@@ -17,7 +18,7 @@ function ProductDetails() {
     }, [id]);
 
     if (loading) return <CircularProgress />
-    if (!product) return <h5>Product not found </h5>;
+    if (!product) return <NotFound />
 
     return (
         <Grid2 container spacing={6}>

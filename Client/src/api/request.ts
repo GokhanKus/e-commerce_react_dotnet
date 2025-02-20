@@ -17,7 +17,7 @@ axios.interceptors.response.use(response => {
             toast.error(data.title);
             break;
         case HttpStatusCode.NotFound.valueOf():
-            toast.error(data.title);
+            router.navigate("/not-found");
             break;
         case HttpStatusCode.InternalServerError.valueOf():
             router.navigate("/server-error", { state: { error: data, status: status } });
