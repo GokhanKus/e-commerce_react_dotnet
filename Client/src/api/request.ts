@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
+import { router } from "../router/Router";
 axios.defaults.baseURL = "http://localhost:5018/api/";
 
 axios.interceptors.response.use(response => {
@@ -19,7 +20,7 @@ axios.interceptors.response.use(response => {
             toast.error(data.title);
             break;
         case HttpStatusCode.InternalServerError.valueOf():
-            toast.error(data.title);
+            router.navigate("/server-error", { state: { error: data, status: status } });
             break;
         default:
             break;
