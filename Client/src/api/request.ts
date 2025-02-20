@@ -1,13 +1,39 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
+import { toast } from "react-toastify";
 axios.defaults.baseURL = "http://localhost:5018/api/";
 
 axios.interceptors.response.use(response => {
     return response;
 
 }, (error: AxiosError) => {
-    console.log("interceptor....");
+    const { data, status } = error.response as AxiosResponse;
+    switch (status) {
+
+        case HttpStatusCode.BadRequest.valueOf():
+            toast.error(data.title);
+            break;
+        case HttpStatusCode.Unauthorized.valueOf():
+            toast.error(data.title);
+            break;
+        case HttpStatusCode.NotFound.valueOf():
+            toast.error(data.title);
+            break;
+        case HttpStatusCode.InternalServerError.valueOf():
+            toast.error(data.title);
+            break;
+        default:
+            break;
+    }
     return Promise.reject(error.response);
 })
+
+const Errors = {
+    getBadRequestError: () => queries.get("/error/bad-request"),
+    getUnauthorizedError: () => queries.get("/error/unauthorized"),
+    getNotFoundError: () => queries.get("/error/not-found"),
+    getServerError: () => queries.get("/error/server-error"),
+    getValidationError: () => queries.get("/error/validation-error"),
+}
 
 const queries = {
     get: (url: string) => axios.get(url).then((response: AxiosResponse) => response.data),
@@ -22,7 +48,7 @@ const Catalog = {
 }
 
 const requests = {
-    Catalog
+    Catalog, Errors
 }
 
 export default requests
