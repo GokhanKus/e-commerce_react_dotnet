@@ -10,6 +10,27 @@ namespace API.Entity
         public int Id { get; set; }
         public string CustomerId { get; set; } = null!;
         public List<CartItem> CartItems { get; set; } = new();
+        public void AddItem(Product product, int quantity)
+        {
+            var item = CartItems.Where(ci => ci.ProductId == product.Id).FirstOrDefault();
+
+            if (item is null)
+            {
+                var cartItem = new CartItem { Product = product, Quantity = quantity };
+                CartItems.Add(cartItem);
+            }
+            else item.Quantity = quantity;
+        }
+        public void DeleteItem(int productId, int quantity)
+        {
+            var item = CartItems.Where(ci => ci.ProductId == productId).FirstOrDefault();
+
+            if (item is null) return;
+
+            item.Quantity -= quantity;
+
+            if (item.Quantity <= 0) CartItems.Remove(item);
+        }
     }
     public class CartItem
     {
