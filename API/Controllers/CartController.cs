@@ -36,6 +36,18 @@ namespace API.Controllers
             BadRequest(new ProblemDetails { Title = "the product can not be added to the cart" });
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteItemFromCart(int productId, int quantity)
+        {
+            var item = await GetOrCreate();
+            item.DeleteItem(productId, quantity);
+
+            return await context.SaveChangesAsync() > 0 ?
+            NoContent() :
+            BadRequest(new ProblemDetails { Title = "no such as product found" });
+        }
+
+        //normalde controllerda private metot falan olmaz ya da controllerda dbcontext kullanılmaz etc.. controller'ın gorevi gelen http verb'lerini karsılamaktır ama bu projenin amacı backendi react'la birlikte kullanmak oldugu icin best practiceler göz ardı edilmistir, bu projenin amaci react training oldugu icin bu kötü senaryolari dikkate almayalim
         private async Task<Cart> GetOrCreate()
         {
             var cart = await context.Carts
