@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Context;
+using API.Dto;
 using API.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,10 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<Cart>> GetCart()
+        public async Task<ActionResult<CartDto>> GetCart()
         {
             var cart = await GetOrCreate();
-            return cart;
+            return CartToDto(cart);
         }
 
         [HttpPost]
@@ -32,7 +33,7 @@ namespace API.Controllers
             cart.AddItem(product, quantity);
 
             return await context.SaveChangesAsync() > 0 ?
-            CreatedAtAction(nameof(GetCart), cart) :
+            CreatedAtAction(nameof(GetCart), CartToDto(cart)) :
             BadRequest(new ProblemDetails { Title = "the product can not be added to the cart" });
         }
 
@@ -69,6 +70,24 @@ namespace API.Controllers
                 await context.SaveChangesAsync();
             }
             return cart;
+        }
+        private CartDto CartToDto(Cart cart)
+        {
+            var cartDto = new CartDto
+            {
+                CartId = cart.Id,
+                CustomerId = cart.CustomerId,
+                CartItems = cart.CartItems.Select(ci => new CartItemDto
+                {
+                    ProductId = ci.ProductId,
+                    Name = ci.Product.Name,
+                    Quantity = ci.Quantity,
+                    Price = ci.Product.Price,
+                    ImageUrl = ci.Product.ImageUrl
+                }).ToList()
+            };
+
+            return cartDto;
         }
     }
 }
