@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace API.Entity
@@ -19,7 +20,7 @@ namespace API.Entity
                 var cartItem = new CartItem { Product = product, Quantity = quantity };
                 CartItems.Add(cartItem);
             }
-            else item.Quantity = quantity;
+            else item.Quantity += quantity;
         }
         public void DeleteItem(int productId, int quantity)
         {
@@ -38,7 +39,10 @@ namespace API.Entity
         public int ProductId { get; set; }
         public Product Product { get; set; } = null!;
         public int Quantity { get; set; } //aynı urunden kac tane eklenmis?
+
         public int CartId { get; set; }
+
+        [JsonIgnore]
         public Cart Cart { get; set; } = null!;
     }
 }
