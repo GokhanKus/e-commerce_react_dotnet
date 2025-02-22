@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Link } from "react-router";
 import { useState } from "react";
 import requests from "../../api/request";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     product: IProduct
@@ -31,8 +32,19 @@ function Product({ product }: Props) {
                 <Typography variant="body2" color="secondary">{(product.price / 100).toFixed(2)} ₺</Typography>
             </CardContent>
             <CardActions>
-                <Button variant="outlined" size="small" startIcon={<AddShoppingCart />} color="success"
-                    onClick={() => handleAddItem(product.id)}> Add to cart</Button>
+
+                {/* <Button variant="outlined" size="small" startIcon={<AddShoppingCart />} color="success"
+                    onClick={() => handleAddItem(product.id)}> Add to cart</Button> */}
+
+                <LoadingButton
+                    size="small"
+                    variant="outlined"
+                    color="success"
+                    loadingPosition="start"
+                    startIcon={<AddShoppingCart />}
+                    loading={loading}
+                    onClick={() => handleAddItem(product.id)}>Add to cart</LoadingButton>
+
                 <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" size="small" startIcon={<SearchIcon />} color="primary">View</Button>
             </CardActions>
         </Card >
