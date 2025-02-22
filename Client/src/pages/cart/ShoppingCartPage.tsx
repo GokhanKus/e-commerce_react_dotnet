@@ -4,6 +4,7 @@ import { useCartContext } from "../../context/CartContext";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import requests from "../../api/request";
+import { toast } from "react-toastify";
 
 function ShoppingCartPage() {
 
@@ -72,7 +73,10 @@ function ShoppingCartPage() {
 
                             <TableCell align="right">
                                 <LoadingButton color="error" loading={status.loading && status.id === "remove_all" + item.productId}
-                                    onClick={() => handleRemoveItem(item.productId, "remove_all" + item.productId, item.quantity)}>
+                                    onClick={() => {
+                                        handleRemoveItem(item.productId, "remove_all" + item.productId, item.quantity);
+                                        toast.error("item's removed from your basket")
+                                    }}>
                                     <Delete />
 
                                 </LoadingButton>

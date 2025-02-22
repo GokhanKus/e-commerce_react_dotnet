@@ -1,14 +1,23 @@
-import { CircularProgress, Divider, Grid2, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material"
+import { CircularProgress, Divider, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router"
 import { IProduct } from "../../model/IProduct";
 import requests from "../../api/request";
 import NotFound from "../../errors/NotFound";
+import { LoadingButton } from "@mui/lab";
+import { AddShoppingCart } from "@mui/icons-material";
+import { useCartContext } from "../../context/CartContext";
+import { toast } from "react-toastify";
 
 function ProductDetails() {
     const { id } = useParams<{ id: string }>(); //sayfaya gelen route parametresini almak icin use params kullaniriz
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isAdded, setIsAdded] = useState(false);
+    const { cart, setCart } = useCartContext();
+
+    //product details sayfasında o üründen daha once sepete eklenmis mi eklenmemis mi onun kontrolünü yapıyoruz cunku ona gore uzerine eklenecek
+    const item = cart?.cartItems.find(i => i.productId == product?.id);
 
     useEffect(() => {
         id && requests.Catalog.details(parseInt(id))
@@ -16,6 +25,17 @@ function ProductDetails() {
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
     }, [id]);
+
+    const handleAddItem = (id: number) => {
+        setIsAdded(true);
+        requests.Cart.addItem(id)
+            .then(cart => {
+                setCart(cart);
+                toast.success("added to your basket");
+            })
+            .catch(err => console.log(err))
+            .finally(() => setLoading(false));
+    };
 
     if (loading) return <CircularProgress />
     if (!product) return <NotFound />
@@ -48,7 +68,17 @@ function ProductDetails() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
+                <Stack direction="row" spacing={2} sx={{ mt: 3 }} alignItems="center">
+                    <LoadingButton variant="outlined" loadingPosition="start"
+                        startIcon={<AddShoppingCart />} loading={isAdded} onClick={() => handleAddItem(product.id)}>
+                        Add to cart
+                    </LoadingButton>
+                    {
+                        item?.quantity! > 0 && (
+                            <Typography variant="body2">You added this item({item?.quantity}) in your basket</Typography>
+                        )
+                    }
+                </Stack>
             </Grid2>
         </Grid2>
     )
