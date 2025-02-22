@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Router";
-import { DateRange } from "@mui/icons-material";
 axios.defaults.baseURL = "http://localhost:5018/api/";
 
 axios.interceptors.response.use(response => {
@@ -56,8 +55,15 @@ const Catalog = {
     details: (id: number) => queries.get(`products/${id}`)
 }
 
+const Cart = {
+    //request URL'lerimiz;
+    get: queries.get("cart"),
+    addItem: (productId: Number, quantity = 1) => queries.post(`cart?productId=${productId}&quantity=${quantity}`, {}),
+    deleteItem: (productId: Number, quantity = 1) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`)
+}
+
 const requests = {
-    Catalog, Errors
+    Catalog, Errors, Cart
 }
 
 export default requests
