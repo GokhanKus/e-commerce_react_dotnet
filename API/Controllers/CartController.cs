@@ -40,11 +40,11 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteItemFromCart(int productId, int quantity)
         {
-            var item = await GetOrCreate();
-            item.DeleteItem(productId, quantity);
+            var cart = await GetOrCreate();
+            cart.DeleteItem(productId, quantity);
 
             return await context.SaveChangesAsync() > 0 ?
-            NoContent() :
+            CreatedAtAction(nameof(GetCart), CartToDto(cart)) :
             BadRequest(new ProblemDetails { Title = "no such as product found" });
         }
 
