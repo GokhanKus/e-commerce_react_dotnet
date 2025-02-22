@@ -60,7 +60,7 @@ const Catalog = {
 
 const Cart = {
     //request URL'lerimiz;
-    get: queries.get("cart"),
+    get: () => queries.get("cart"),
     addItem: (productId: Number, quantity = 1) => queries.post(`cart?productId=${productId}&quantity=${quantity}`, {}),
     deleteItem: (productId: Number, quantity = 1) => queries.delete(`cart?productId=${productId}&quantity=${quantity}`)
 }
