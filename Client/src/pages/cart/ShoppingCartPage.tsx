@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react"
-import requests from "../../api/request"
-import { CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { ICart } from "../../model/ICart";
-import { Delete, ImportExport } from "@mui/icons-material";
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import { useCartContext } from "../../context/CartContext";
 
 function ShoppingCartPage() {
 
-    const [cart, setCart] = useState<ICart | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { cart } = useCartContext();
 
-    useEffect(() => {
-        requests.Cart.get()
-            .then(cart => setCart(cart))
-            .catch(err => console.log(err))
-            .finally(() => setLoading(false));
-    }, [])
-
-    if (loading) return <CircularProgress />
     if (!cart) return <h1>Empty Cart</h1>
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">

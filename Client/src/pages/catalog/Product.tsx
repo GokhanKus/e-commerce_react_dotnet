@@ -6,6 +6,7 @@ import { Link } from "react-router";
 import { useState } from "react";
 import requests from "../../api/request";
 import { LoadingButton } from "@mui/lab";
+import { useCartContext } from "../../context/CartContext";
 
 interface Props {
     product: IProduct
@@ -14,12 +15,12 @@ interface Props {
 function Product({ product }: Props) {
 
     const [loading, setLoading] = useState(false);
-
+    const { setCart } = useCartContext();
     const handleAddItem = (productId: number) => {
 
         setLoading(true);
         requests.Cart.addItem(productId)
-            .then(cart => console.log(cart))
+            .then(cart => setCart(cart))
             .catch(err => console.log(err))
             .finally(() => setLoading(false));
     }
