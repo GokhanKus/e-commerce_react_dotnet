@@ -8,6 +8,7 @@ import requests from "../../api/request";
 import { LoadingButton } from "@mui/lab";
 import { useCartContext } from "../../context/CartContext";
 import { toast } from "react-toastify";
+import { currencyTRY } from "../../utilities/formatCurrency";
 
 interface Props {
     product: IProduct
@@ -34,7 +35,7 @@ function Product({ product }: Props) {
             <CardMedia sx={{ height: 160, backgroundSize: "contain" }} image={`http://localhost:5018/images/${product.imageUrl}`} />
             <CardContent>
                 <Typography gutterBottom variant="h6" component="h2" color="textSecondary"> {product.name} </Typography>
-                <Typography variant="body2" color="secondary">{(product.price / 100).toFixed(2)} ₺</Typography>
+                <Typography variant="body2" color="secondary">{currencyTRY.format(product.price)}</Typography>
             </CardContent>
             <CardActions>
 

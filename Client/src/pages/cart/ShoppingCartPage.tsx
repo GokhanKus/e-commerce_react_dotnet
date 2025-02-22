@@ -5,6 +5,8 @@ import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import requests from "../../api/request";
 import { toast } from "react-toastify";
+import CartSummary from "./CartSummary";
+import { currencyTRY } from "../../utilities/formatCurrency";
 
 function ShoppingCartPage() {
 
@@ -53,7 +55,7 @@ function ShoppingCartPage() {
                         >
                             <TableCell component="th" scope="row"><img src={`http://localhost:5018/images/${item.imageUrl}`} style={{ height: 60 }} /></TableCell>
                             <TableCell component="th" scope="row">{item.name}</TableCell>
-                            <TableCell align="right">{item.price} ₺</TableCell>
+                            <TableCell align="right">{currencyTRY.format(item.price)}</TableCell>
                             <TableCell align="right">
 
                                 <LoadingButton loading={status.loading && status.id === "add_" + item.productId}
@@ -69,7 +71,7 @@ function ShoppingCartPage() {
                                 </LoadingButton>
 
                             </TableCell>
-                            <TableCell align="right">{item.price * item.quantity} ₺</TableCell>
+                            <TableCell align="right">{currencyTRY.format(item.price * item.quantity)} ₺</TableCell>
 
                             <TableCell align="right">
                                 <LoadingButton color="error" loading={status.loading && status.id === "remove_all" + item.productId}
@@ -83,6 +85,7 @@ function ShoppingCartPage() {
                             </TableCell>
                         </TableRow>
                     ))}
+                    <CartSummary />
                 </TableBody>
             </Table>
         </TableContainer>
