@@ -35,7 +35,9 @@ app.UseStaticFiles();
 app.UseCors(opt =>
 {
     //front end tarafında request atarken has been blocked by cors hatası alıyorduk lclhost 3000 adresinden(react front end) gelen isteklere izin verelim 
-    opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
+    //frontend tarafında sepete urun eklerken customerId alınmıyordu her eklendiginde sanki farklı bir customerId ekliyormus gibi oluyordu 
+    //o yuzden cookie token gibi ogelerin cross origin isteklerinde de tasınmasını saglamak icin AllowCredentials() kullandık
 });
 
 app.UseAuthorization();

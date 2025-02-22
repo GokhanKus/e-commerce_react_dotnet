@@ -17,7 +17,6 @@ function Product({ product }: Props) {
     const handleAddItem = (productId: number) => {
 
         setLoading(true);
-
         requests.Cart.addItem(productId)
             .then(cart => console.log(cart))
             .catch(err => console.log(err))

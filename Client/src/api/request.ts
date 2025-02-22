@@ -1,7 +1,10 @@
 import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Router";
+
 axios.defaults.baseURL = "http://localhost:5018/api/";
+// Bu ayar, axios isteklerinde cookies, authorization headers, SSL client certificates gibi kimlik doğrulama bilgilerini içermesine olanak tanır.
+axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(response => {
     return response;
