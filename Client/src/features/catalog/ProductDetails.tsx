@@ -6,16 +6,18 @@ import requests from "../../api/request";
 import NotFound from "../../errors/NotFound";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
-import { useCartContext } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import { currencyTRY } from "../../utilities/formatCurrency";
+import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { setCart } from "../cart/cartSlice";
 
 function ProductDetails() {
     const { id } = useParams<{ id: string }>(); //sayfaya gelen route parametresini almak icin use params kullaniriz
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAdded, setIsAdded] = useState(false);
-    const { cart, setCart } = useCartContext();
+    const { cart } = useAppSelector(state => state.cart);
+    const dispatch = useAppDispatch();
 
     //product details sayfasında o üründen daha once sepete eklenmis mi eklenmemis mi onun kontrolünü yapıyoruz cunku ona gore uzerine eklenecek
     const item = cart?.cartItems.find(i => i.productId == product?.id);
@@ -31,11 +33,11 @@ function ProductDetails() {
         setIsAdded(true);
         requests.Cart.addItem(id)
             .then(cart => {
-                setCart(cart);
+                dispatch(setCart(cart));
                 toast.success("added to your basket");
             })
             .catch(err => console.log(err))
-            .finally(() => setLoading(false));
+            .finally(() => setIsAdded(false));
     };
 
     if (loading) return <CircularProgress />

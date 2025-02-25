@@ -1,16 +1,18 @@
 import { Alert, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { AddCircleOutline, Delete, RemoveCircleOutline } from "@mui/icons-material";
-import { useCartContext } from "../../context/CartContext";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import requests from "../../api/request";
 import { toast } from "react-toastify";
 import CartSummary from "./CartSummary";
 import { currencyTRY } from "../../utilities/formatCurrency";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { setCart } from "./cartSlice";
 
 function ShoppingCartPage() {
 
-    const { cart, setCart } = useCartContext();
+    const { cart } = useAppSelector(state => state.cart);
+    const dispatch = useAppDispatch();
     const [status, setStatus] = useState({ loading: false, id: "" });
 
     if (cart?.cartItems.length === 0) return <Alert severity="warning">no product in your basket</Alert>
@@ -19,7 +21,7 @@ function ShoppingCartPage() {
         setStatus({ loading: true, id: id });
 
         requests.Cart.addItem(productId)
-            .then(cart => setCart(cart))
+            .then(cart => dispatch(setCart(cart)))
             .catch(err => console.log(err))
             .finally(() => setStatus({ loading: false, id: "" }));
     }
@@ -28,7 +30,7 @@ function ShoppingCartPage() {
         setStatus({ loading: true, id: id });
 
         requests.Cart.deleteItem(productId, quantity)
-            .then(cart => setCart(cart))
+            .then(cart => dispatch(setCart(cart)))
             .catch(err => console.log(err))
             .finally(() => setStatus({ loading: false, id: "" }));
     }
