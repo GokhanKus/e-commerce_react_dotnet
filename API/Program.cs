@@ -1,3 +1,4 @@
+using API.config;
 using API.Context;
 using API.Entity;
 using API.Middlewares;
@@ -24,6 +25,7 @@ app.UseMiddleware<ExceptionHandling>();
 
 if (app.Environment.IsDevelopment())
 {
+    SeedDataBase.Initialize(app);
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {
