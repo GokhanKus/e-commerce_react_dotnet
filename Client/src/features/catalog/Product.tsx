@@ -3,13 +3,10 @@ import { IProduct } from "../../model/IProduct";
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from "react-router";
-import { useState } from "react";
-import requests from "../../api/request";
 import { LoadingButton } from "@mui/lab";
-import { toast } from "react-toastify";
 import { currencyTRY } from "../../utilities/formatCurrency";
-import { useAppDispatch } from "../../hooks/hooks";
-import { setCart } from "../cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { addItemToCart } from "../cart/cartSlice";
 
 interface Props {
     product: IProduct
@@ -17,19 +14,8 @@ interface Props {
 
 function Product({ product }: Props) {
 
-    const [loading, setLoading] = useState(false);
+    const { status } = useAppSelector(state => state.cart);
     const dispatch = useAppDispatch();
-    const handleAddItem = (productId: number) => {
-
-        setLoading(true);
-        requests.Cart.addItem(productId)
-            .then(cart => {
-                dispatch(setCart(cart));
-                toast.success("added to your basket");
-            })
-            .catch(err => console.log(err))
-            .finally(() => setLoading(false));
-    }
 
     return (
         <Card>
@@ -49,8 +35,8 @@ function Product({ product }: Props) {
                     color="success"
                     loadingPosition="start"
                     startIcon={<AddShoppingCart />}
-                    loading={loading}
-                    onClick={() => handleAddItem(product.id)}>Add to cart</LoadingButton>
+                    loading={status === "pending" + product.id}//urunu sepete eklemek icin butona basarken sadece o itemda loading animasyon cıksın
+                    onClick={() => dispatch(addItemToCart({ productId: product.id }))}>Add to cart</LoadingButton>
 
                 <Button component={Link} to={`/catalog/${product.id}`} variant="outlined" size="small" startIcon={<SearchIcon />} color="primary">View</Button>
             </CardActions>

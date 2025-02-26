@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ICart } from "../../model/ICart";
-import axios from "axios";
 import requests from "../../api/request";
 
 interface CartState {
@@ -24,7 +23,7 @@ export const addItemToCart = createAsyncThunk<ICart, { productId: number, quanti
         }
     }
 )
-export const deleteItemFromCart = createAsyncThunk<ICart, { productId: number, quantity?: number }>(
+export const deleteItemFromCart = createAsyncThunk<ICart, { productId: number, quantity?: number, key?: string }>(
     "cart/deleteItemFromCart",
     async ({ productId, quantity = 1 }) => {
         try {
@@ -47,7 +46,7 @@ export const cartSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(addItemToCart.pending, (state, action) => {
             console.log(action);
-            state.status = "pending";
+            state.status = "pendingAddItem" + action.meta.arg.productId; //urunu sepete eklemek icin butona basarken sadece o itemda loading animasyon cıksın
         })
         builder.addCase(addItemToCart.fulfilled, (state, action) => {
             state.cart = action.payload;
@@ -58,7 +57,7 @@ export const cartSlice = createSlice({
         })
         builder.addCase(deleteItemFromCart.pending, (state, action) => {
             console.log(action);
-            state.status = "pending";
+            state.status = "pendingDeleteItem" + action.meta.arg.productId + action.meta.arg.key; //urunu sepetten silmek icin butona basarken sadece o itemda loading animasyon cıksın
         })
         builder.addCase(deleteItemFromCart.fulfilled, (state, action) => {
             state.cart = action.payload;

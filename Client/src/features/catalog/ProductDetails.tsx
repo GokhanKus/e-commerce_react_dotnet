@@ -6,17 +6,15 @@ import requests from "../../api/request";
 import NotFound from "../../errors/NotFound";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
-import { toast } from "react-toastify";
 import { currencyTRY } from "../../utilities/formatCurrency";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
-import { setCart } from "../cart/cartSlice";
+import { addItemToCart } from "../cart/cartSlice";
 
 function ProductDetails() {
     const { id } = useParams<{ id: string }>(); //sayfaya gelen route parametresini almak icin use params kullaniriz
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isAdded, setIsAdded] = useState(false);
-    const { cart } = useAppSelector(state => state.cart);
+    const { cart, status } = useAppSelector(state => state.cart);
     const dispatch = useAppDispatch();
 
     //product details sayfasında o üründen daha once sepete eklenmis mi eklenmemis mi onun kontrolünü yapıyoruz cunku ona gore uzerine eklenecek
@@ -28,17 +26,6 @@ function ProductDetails() {
             .catch(error => console.log(error))
             .finally(() => setLoading(false));
     }, [id]);
-
-    const handleAddItem = (id: number) => {
-        setIsAdded(true);
-        requests.Cart.addItem(id)
-            .then(cart => {
-                dispatch(setCart(cart));
-                toast.success("added to your basket");
-            })
-            .catch(err => console.log(err))
-            .finally(() => setIsAdded(false));
-    };
 
     if (loading) return <CircularProgress />
     if (!product) return <NotFound />
@@ -73,7 +60,7 @@ function ProductDetails() {
                 </TableContainer>
                 <Stack direction="row" spacing={2} sx={{ mt: 3 }} alignItems="center">
                     <LoadingButton variant="outlined" loadingPosition="start"
-                        startIcon={<AddShoppingCart />} loading={isAdded} onClick={() => handleAddItem(product.id)}>
+                        startIcon={<AddShoppingCart />} loading={status === "pending" + product.id} onClick={() => dispatch(addItemToCart({ productId: product.id }))}>
                         Add to cart
                     </LoadingButton>
                     {

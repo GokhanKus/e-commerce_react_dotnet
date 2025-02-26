@@ -1,39 +1,18 @@
 import { Alert, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { AddCircleOutline, Delete, RemoveCircleOutline } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { useState } from "react";
-import requests from "../../api/request";
 import { toast } from "react-toastify";
 import CartSummary from "./CartSummary";
 import { currencyTRY } from "../../utilities/formatCurrency";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { setCart } from "./cartSlice";
+import { addItemToCart, deleteItemFromCart } from "./cartSlice";
 
 function ShoppingCartPage() {
 
-    const { cart } = useAppSelector(state => state.cart);
+    const { cart, status } = useAppSelector(state => state.cart);
     const dispatch = useAppDispatch();
-    const [status, setStatus] = useState({ loading: false, id: "" });
 
     if (cart?.cartItems.length === 0) return <Alert severity="warning">no product in your basket</Alert>
-
-    const handleAddItem = (productId: number, id: string) => {
-        setStatus({ loading: true, id: id });
-
-        requests.Cart.addItem(productId)
-            .then(cart => dispatch(setCart(cart)))
-            .catch(err => console.log(err))
-            .finally(() => setStatus({ loading: false, id: "" }));
-    }
-
-    const handleRemoveItem = (productId: number, id: string, quantity: number = 1) => {
-        setStatus({ loading: true, id: id });
-
-        requests.Cart.deleteItem(productId, quantity)
-            .then(cart => dispatch(setCart(cart)))
-            .catch(err => console.log(err))
-            .finally(() => setStatus({ loading: false, id: "" }));
-    }
 
     return (
         <TableContainer component={Paper}>
@@ -60,15 +39,15 @@ function ShoppingCartPage() {
                             <TableCell align="right">{currencyTRY.format(item.price)}</TableCell>
                             <TableCell align="right">
 
-                                <LoadingButton loading={status.loading && status.id === "add_" + item.productId}
-                                    onClick={() => handleAddItem(item.productId, "add_" + item.productId)}>
+                                <LoadingButton loading={status === "pendingAddItem" + item.productId}
+                                    onClick={() => dispatch(addItemToCart({ productId: item.productId }))}>
                                     <AddCircleOutline />
                                 </LoadingButton>
 
                                 {item.quantity}
 
-                                <LoadingButton loading={status.loading && status.id === "remove_" + item.productId}
-                                    onClick={() => handleRemoveItem(item.productId, "remove_" + item.productId)}>
+                                <LoadingButton loading={status === "pendingDeleteItem" + item.productId + "single"}
+                                    onClick={() => dispatch(deleteItemFromCart({ productId: item.productId, quantity: 1, key: "single" }))}>
                                     <RemoveCircleOutline />
                                 </LoadingButton>
 
@@ -76,9 +55,9 @@ function ShoppingCartPage() {
                             <TableCell align="right">{currencyTRY.format(item.price * item.quantity)} ₺</TableCell>
 
                             <TableCell align="right">
-                                <LoadingButton color="error" loading={status.loading && status.id === "remove_all" + item.productId}
+                                <LoadingButton color="error" loading={status === "pendingDeleteItem" + item.productId + "all"}
                                     onClick={() => {
-                                        handleRemoveItem(item.productId, "remove_all" + item.productId, item.quantity);
+                                        dispatch(deleteItemFromCart({ productId: item.productId, quantity: item.quantity, key: "all" }));
                                         toast.error("item's removed from your basket")
                                     }}>
                                     <Delete />
