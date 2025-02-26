@@ -4,11 +4,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using API.Entity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Context
 {
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, AppRole, string>(options)
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {

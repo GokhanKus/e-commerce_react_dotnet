@@ -1,4 +1,5 @@
 using API.Context;
+using API.Entity;
 using API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddCors();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
