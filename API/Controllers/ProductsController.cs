@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/products")]
-    public class ProductsController(AppDbContext _context) : ControllerBase()
+    public class ProductsController(AppDbContext _context) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
