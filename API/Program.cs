@@ -1,10 +1,13 @@
+using System.Text;
 using API.config;
 using API.Context;
 using API.Entity;
 using API.Middlewares;
 using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,27 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 });
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(opt =>
+    {
+        opt.RequireHttpsMetadata = false;
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidIssuer = "gokhankus.example.com",
+            ValidAudience = "firm.example.com",
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWTSecurity:SecretKey"]!)),
+            ValidateLifetime = true
+        };
+    });
+
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -60,6 +84,7 @@ app.UseCors(opt =>
     //o yuzden cookie token gibi ogelerin cross origin isteklerinde de tasınmasını saglamak icin AllowCredentials() kullandık
 });
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

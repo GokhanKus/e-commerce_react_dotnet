@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Context;
 using API.Dto;
 using API.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace API.Controllers
     public class CartController(AppDbContext context) : ControllerBase
     {
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<CartDto>> GetCart()
         {

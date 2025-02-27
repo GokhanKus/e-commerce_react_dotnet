@@ -34,6 +34,8 @@ namespace API.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(30),
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
+                Issuer = "gokhankus.example.com", //uretici firma
+                Audience = "firm.example.com" //hangi firma icin uretildi..
             };
 
             var token = tokenHandler.CreateToken(tokenSettings);
