@@ -16,7 +16,6 @@ namespace API.Controllers
     public class CartController(AppDbContext context) : ControllerBase
     {
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<CartDto>> GetCart()
         {
