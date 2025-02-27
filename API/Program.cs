@@ -2,6 +2,7 @@ using API.config;
 using API.Context;
 using API.Entity;
 using API.Middlewares;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandling>();

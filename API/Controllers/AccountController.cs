@@ -1,5 +1,6 @@
 using API.Dto;
 using API.Entity;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserManager<AppUser> _userManager) : ControllerBase
+    public class AccountController(UserManager<AppUser> _userManager, TokenService _tokenService) : ControllerBase
     {
 
         [HttpPost("login")]
@@ -19,7 +20,9 @@ namespace API.Controllers
 
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
-            return result ? Ok(new { token = "token" }) : Unauthorized();
+            return result ?
+            Ok(new { token = await _tokenService.GenerateToken(user) }) :
+            Unauthorized();
         }
 
         [HttpPost("register")]
