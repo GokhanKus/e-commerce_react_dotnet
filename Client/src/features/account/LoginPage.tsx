@@ -1,19 +1,19 @@
 import { LockOutlined } from "@mui/icons-material"
-import { Avatar, Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
+import { Avatar, Box, Container, Paper, TextField, Typography } from "@mui/material"
 import { FieldValues, useForm } from "react-hook-form"
 import requests from "../../api/request";
+import { LoadingButton } from "@mui/lab";
 
 
 function LoginPage() {
 
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
         defaultValues: {
             email: "",
             password: ""
         }
     });
     const submitForm = async (data: FieldValues) => {
-        console.log(data);
         await requests.Account.login(data);
     }
     return (
@@ -26,20 +26,27 @@ function LoginPage() {
                 <Box onSubmit={handleSubmit(submitForm)} component="form" noValidate sx={{ mt: 2 }}>
 
                     <TextField
-                        {...register("email")}
+                        {...register("email", { required: "email is required field" })}
                         label="Enter email" type="email"
                         fullWidth required autoFocus
-                        sx={{ mb: 2 }} size="small">
+                        sx={{ mb: 2 }} size="small"
+                        error={!!errors.email}
+                        helperText={errors.email?.message}>
                     </TextField>
 
                     <TextField
-                        {...register("password")}
+                        {...register("password", { required: "password is required field", minLength: { value: 6, message: "min length least 6 characters" } })}
                         label="Enter password" type="password"
                         fullWidth required
-                        sx={{ mb: 2 }} size="small">
+                        sx={{ mb: 2 }} size="small"
+                        error={!!errors.password}
+                        helperText={errors.password?.message}>
                     </TextField>
 
-                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 1 }}>Login</Button>
+                    <LoadingButton loading={isSubmitting} disabled={!isValid}
+                        type="submit" variant="contained" fullWidth sx={{ mt: 1 }}>
+                        Login
+                    </LoadingButton>
                 </Box>
             </Paper>
         </Container>
