@@ -10,7 +10,10 @@ const links = [
     { title: "Contact", to: "/contact" },
     { title: "Error", to: "/error" },
 ]
-
+const authLinks = [
+    { title: "Login", to: "/login" },
+    { title: "Register", to: "/register" },
+]
 const navStyles = {
     color: "inherit",
     textDecoration: "none",
@@ -43,16 +46,23 @@ function Header() {
                         </Stack>
                     </Box>
 
-                    <Box>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
                         <IconButton component={Link} to="/cart" size="large" edge="start" color="inherit">
                             <Badge badgeContent={itemCount} max={9} color="secondary">
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>
+                        <Stack direction="row" >
+                            {
+                                authLinks.map(link =>
+                                    <Button key={link.to} sx={navStyles} component={NavLink} to={link.to}>{link.title}</Button>
+                                )
+                            }
+                        </Stack>
                     </Box>
 
                 </Toolbar>
-            </AppBar>
+            </AppBar >
         </>
     );
 }
