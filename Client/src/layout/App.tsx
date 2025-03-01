@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Header from './Header'
 import { CircularProgress, Container, CssBaseline } from "@mui/material";
 import { Outlet } from "react-router";
 import { ToastContainer } from 'react-toastify';
@@ -7,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import requests from '../api/request';
 import { useAppDispatch } from '../hooks/hooks';
 import { setCart } from '../features/cart/cartSlice';
-import { setUser } from '../features/account/accountSlice';
+import { logout, setUser } from '../features/account/accountSlice';
+import Header from './Header';
 
 function App() {
 
@@ -20,9 +20,12 @@ function App() {
     requests.Account.getUser()
       .then(user => {
         setUser(user);
-        localStorage.setItem("user", user);
+        localStorage.setItem("user", JSON.stringify(user));
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        dispatch(logout());
+      });
 
     requests.Cart.get()
       .then(cart => dispatch(setCart(cart)))
