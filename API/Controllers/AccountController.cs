@@ -12,7 +12,7 @@ namespace API.Controllers
     {
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto model)
+        public async Task<ActionResult<UserDto>> Login(LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user is null)
@@ -21,7 +21,7 @@ namespace API.Controllers
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
             return result ?
-            Ok(new { token = await _tokenService.GenerateToken(user) }) :
+            Ok(new UserDto { Token = await _tokenService.GenerateToken(user), Name = user.Name! }) :
             Unauthorized();
         }
 
