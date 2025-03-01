@@ -1,6 +1,7 @@
 using API.Dto;
 using API.Entity;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +46,22 @@ namespace API.Controllers
             await _userManager.AddToRoleAsync(user, "Customer");
             return Created();
         }
+        [Authorize]
+        [HttpGet("getuser")]
+        public async Task<ActionResult<UserDto>> GetUser()
+        {
+            //browser icerisnde login yaptiktan sonra sayfayi refreshleyince redux icerisindeki user bilgisi kayboluyor cookie ve local storage icerisinde kaybolmuyor
+            //bu token ve name bilgisini tekrar state uzerine aktarmak icin bu metot yazildi
+            var user = await _userManager.FindByNameAsync(User.Identity?.Name!);
 
+            if (user is null)
+                return BadRequest(new ProblemDetails { Title = "username not found" });
+
+            return new UserDto
+            {
+                Token = await _tokenService.GenerateToken(user),
+                Name = user.Name!
+            };
+        }
     }
 }

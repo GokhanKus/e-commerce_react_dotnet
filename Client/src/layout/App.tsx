@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import requests from '../api/request';
 import { useAppDispatch } from '../hooks/hooks';
 import { setCart } from '../features/cart/cartSlice';
+import { setUser } from '../features/account/accountSlice';
 
 function App() {
 
@@ -14,8 +15,17 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(setUser(JSON.parse(localStorage.getItem("user")!)));
+
+    requests.Account.getUser()
+      .then(user => {
+        setUser(user);
+        localStorage.setItem("user", user);
+      })
+      .catch(err => console.log(err));
+
     requests.Cart.get()
-      .then(cart => setCart(cart))
+      .then(cart => dispatch(setCart(cart)))
       .catch(err => console.log(err))
       .finally(() => setLoading(false));
   }, [])
