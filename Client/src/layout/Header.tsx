@@ -2,6 +2,8 @@ import { ShoppingCart } from '@mui/icons-material';
 import { AppBar, Badge, Box, Button, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import { Link, NavLink } from 'react-router';
 import { useAppSelector } from '../hooks/hooks';
+import { useDispatch } from 'react-redux';
+import { logout } from '../features/account/accountSlice';
 
 const links = [
     { title: "Home", to: "/" },
@@ -28,6 +30,9 @@ const navStyles = {
 function Header() {
 
     const { cart } = useAppSelector(state => state.cart);
+    const { user } = useAppSelector(state => state.account);
+    const dispatch = useDispatch();
+
     const itemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0);
     return (
         <>
@@ -45,20 +50,31 @@ function Header() {
                             }
                         </Stack>
                     </Box>
-
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         <IconButton component={Link} to="/cart" size="large" edge="start" color="inherit">
                             <Badge badgeContent={itemCount} max={9} color="secondary">
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>
-                        <Stack direction="row" >
-                            {
-                                authLinks.map(link =>
-                                    <Button key={link.to} sx={navStyles} component={NavLink} to={link.to}>{link.title}</Button>
+                        {
+                            user ?
+                                (
+                                    <Stack direction="row" >
+                                        <Button sx={navStyles}>{user.name}</Button>
+                                        <Button sx={navStyles} onClick={() => dispatch(logout())}>Log Out</Button>
+                                    </Stack>
+                                ) :
+                                (
+                                    <Stack direction="row" >
+                                        {
+                                            authLinks.map(link =>
+                                                <Button key={link.to} sx={navStyles} component={NavLink} to={link.to}>{link.title}</Button>
+                                            )
+                                        }
+                                    </Stack>
                                 )
-                            }
-                        </Stack>
+                        }
+
                     </Box>
 
                 </Toolbar>

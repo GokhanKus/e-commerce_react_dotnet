@@ -17,9 +17,12 @@ function LoginPage() {
         }
     });
     const submitForm = async (data: FieldValues) => {
-        await dispatch(loginUser(data));
-        navigate("/catalog");
-    }
+        const result = await dispatch(loginUser(data));
+
+        if (loginUser.fulfilled.match(result)) { //login basariliysa catalog sayfasina yonlendirilsin
+            navigate("/catalog");
+        }
+    };
     return (
         <Container maxWidth="xs">
             <Paper sx={{ marginTop: 8, padding: 2 }} elevation={3}>
