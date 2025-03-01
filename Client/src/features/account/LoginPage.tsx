@@ -1,24 +1,20 @@
 import { LockOutlined } from "@mui/icons-material"
 import { Avatar, Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
-import { useState } from "react"
+import { FieldValues, useForm } from "react-hook-form"
 import requests from "../../api/request";
+
 
 function LoginPage() {
 
-    // const [email, setEmail] = useState("");
-    // const [password, setPassword] = useState("");
-    const [values, setValues] = useState({
-        email: "",
-        password: ""
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            email: "",
+            password: ""
+        }
     });
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        console.log(values);
-        requests.Account.login(values);
-    }
-    const handleInputChange = (e: any) => {
-        const { name, value } = e.target;
-        setValues({ ...values, [name]: value });
+    const submitForm = async (data: FieldValues) => {
+        console.log(data);
+        await requests.Account.login(data);
     }
     return (
         <Container maxWidth="xs">
@@ -27,17 +23,17 @@ function LoginPage() {
                     <LockOutlined />
                 </Avatar>
                 <Typography component="h1" variant="h5" sx={{ textAlign: "center" }}>Login</Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+                <Box onSubmit={handleSubmit(submitForm)} component="form" noValidate sx={{ mt: 2 }}>
 
                     <TextField
-                        name="email" value={values.email} onChange={handleInputChange}
+                        {...register("email")}
                         label="Enter email" type="email"
                         fullWidth required autoFocus
                         sx={{ mb: 2 }} size="small">
                     </TextField>
 
                     <TextField
-                        name="password" value={values.password} onChange={handleInputChange}
+                        {...register("password")}
                         label="Enter password" type="password"
                         fullWidth required
                         sx={{ mb: 2 }} size="small">

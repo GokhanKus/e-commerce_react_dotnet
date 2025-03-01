@@ -16,7 +16,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user is null)
-                return BadRequest(new { message = "email not found" });
+                return BadRequest(new ProblemDetails { Title = "email not found" });
 
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
