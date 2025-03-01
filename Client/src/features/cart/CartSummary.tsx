@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@mui/material"
 import { currencyTRY } from "../../utilities/formatCurrency";
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppSelector } from "../../store/store";
 
 function CartSummary() {
     const { cart } = useAppSelector(state => state.cart);

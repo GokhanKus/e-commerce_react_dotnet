@@ -5,9 +5,9 @@ import NotFound from "../../errors/NotFound";
 import { LoadingButton } from "@mui/lab";
 import { AddShoppingCart } from "@mui/icons-material";
 import { currencyTRY } from "../../utilities/formatCurrency";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { addItemToCart } from "../cart/cartSlice";
 import { fetchProductById, selectProductById } from "./catalogSlice";
+import { useAppSelector, useAppDispatch } from "../../store/store";
 
 function ProductDetails() {
     const { id } = useParams<{ id: string }>(); //sayfaya gelen route parametresini almak icin use params kullaniriz

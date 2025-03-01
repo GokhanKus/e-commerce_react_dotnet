@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Typography } from '@mui/material'
 import { decrement, increment, incrementByAmount } from './counterSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { useAppSelector, useAppDispatch } from '../../store/store';
 
 function Counter() {
     const count = useAppSelector((state) => state.counter.value);
