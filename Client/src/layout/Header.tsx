@@ -4,6 +4,7 @@ import { Link, NavLink } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/account/accountSlice';
 import { useAppSelector } from '../store/store';
+import { clearCart } from '../features/cart/cartSlice';
 
 const links = [
     { title: "Home", to: "/" },
@@ -61,7 +62,12 @@ function Header() {
                                 (
                                     <Stack direction="row" >
                                         <Button sx={navStyles}>{user.userName}</Button>
-                                        <Button sx={navStyles} onClick={() => dispatch(logout())}>Log Out</Button>
+                                        <Button sx={navStyles}
+                                            onClick={() => {
+                                                dispatch(logout())
+                                                dispatch(clearCart())
+                                            }}>
+                                            Log Out</Button>
                                     </Stack>
                                 ) :
                                 (

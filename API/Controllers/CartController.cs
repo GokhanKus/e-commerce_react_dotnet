@@ -19,14 +19,14 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<CartDto>> GetCart()
         {
-            var cart = await GetOrCreate();
+            var cart = await GetOrCreate(GetCustomerId());
             return CartToDto(cart);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddItemToCart(int productId, int quantity)
         {
-            var cart = await GetOrCreate();
+            var cart = await GetOrCreate(GetCustomerId());
             var product = await context.Products.FirstOrDefaultAsync(p => p.Id == productId);
             if (product == null)
                 return NotFound("product could not found");
@@ -41,7 +41,7 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteItemFromCart(int productId, int quantity)
         {
-            var cart = await GetOrCreate();
+            var cart = await GetOrCreate(GetCustomerId());
             cart.DeleteItem(productId, quantity);
 
             return await context.SaveChangesAsync() > 0 ?
@@ -49,23 +49,30 @@ namespace API.Controllers
             BadRequest(new ProblemDetails { Title = "no such as product found" });
         }
 
-        //normalde controllerda private metot falan olmaz ya da controllerda dbcontext kullanılmaz etc.. controller'ın gorevi gelen http verb'lerini karsılamaktır ama bu projenin amacı backendi react'la birlikte kullanmak oldugu icin best practiceler göz ardı edilmistir, bu projenin amaci react training oldugu icin bu kötü senaryolari dikkate almayalim
-        private async Task<Cart> GetOrCreate()
+        private string GetCustomerId() => User.Identity?.Name ?? Request.Cookies["customerId"]!;
+
+        private async Task<Cart> GetOrCreate(string custId)
         {
             var cart = await context.Carts
             .Include(c => c.CartItems)
             .ThenInclude(ci => ci.Product)
-            .FirstOrDefaultAsync(c => c.CustomerId == Request.Cookies["customerId"]);
+            .FirstOrDefaultAsync(c => c.CustomerId == custId);
 
             if (cart is null)
             {
-                var customerId = Guid.NewGuid().ToString();
-                var cookieOptions = new CookieOptions
+                var customerId = User.Identity?.Name;
+
+                if (string.IsNullOrEmpty(customerId))
                 {
-                    Expires = DateTime.Now.AddMonths(1),
-                    IsEssential = true
-                };
-                Response.Cookies.Append("customerId", customerId, cookieOptions);
+                    customerId = Guid.NewGuid().ToString();
+                    var cookieOptions = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMonths(1),
+                        IsEssential = true
+                    };
+                    Response.Cookies.Append("customerId", customerId, cookieOptions);
+                }
+
                 cart = new Cart { CustomerId = customerId };
                 context.Carts.Add(cart);
                 await context.SaveChangesAsync();

@@ -5,6 +5,7 @@ import { LoadingButton } from "@mui/lab";
 import { loginUser } from "./accountSlice";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../store/store";
+import { getCart } from "../cart/cartSlice";
 
 
 function LoginPage() {
@@ -18,6 +19,7 @@ function LoginPage() {
     });
     const submitForm = async (data: FieldValues) => {
         const result = await dispatch(loginUser(data));
+        await dispatch(getCart());
 
         if (loginUser.fulfilled.match(result)) { //login basariliysa catalog sayfasina yonlendirilsin
             navigate("/catalog");

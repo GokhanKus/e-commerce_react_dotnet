@@ -14,9 +14,8 @@ function App() {
   const dispatch = useAppDispatch();
 
   const initApp = async () => {
-
-    await dispatch(getCart());
     await dispatch(getUser());
+    await dispatch(getCart());
   }
 
   useEffect(() => {

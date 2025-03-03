@@ -1,17 +1,18 @@
+using API.Context;
 using API.Dto;
 using API.Entity;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController(UserManager<AppUser> _userManager, TokenService _tokenService) : ControllerBase
+    public class AccountController(UserManager<AppUser> _userManager, TokenService _tokenService, AppDbContext context) : ControllerBase
     {
-
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto model)
         {
@@ -20,15 +21,31 @@ namespace API.Controllers
                 return BadRequest(new ProblemDetails { Title = "email not found" });
 
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!result)
+                return Unauthorized();
 
-            return result ?
-            Ok(new UserDto
+            var userCart = await GetOrCreate(model.Email);
+            var cookieCart = await GetOrCreate(Request.Cookies["customerId"]!);
+
+            if (userCart != null)
+            {
+                foreach (var item in cookieCart.CartItems)
+                {
+                    userCart.AddItem(item.Product, item.Quantity);
+                }
+
+                context.Carts.Remove(cookieCart);
+            }
+
+            userCart.CustomerId = model.Email;
+            await context.SaveChangesAsync();
+
+            return Ok(new UserDto
             {
                 Token = await _tokenService.GenerateToken(user),
                 Name = user.Name!,
                 UserName = user.UserName!
-            }) :
-            Unauthorized();
+            });
         }
 
         [HttpPost("register")]
@@ -79,6 +96,35 @@ namespace API.Controllers
                 Token = await _tokenService.GenerateToken(user),
                 Name = user.Name!
             };
+        }
+
+        private async Task<Cart> GetOrCreate(string custId)
+        {
+            var cart = await context.Carts
+            .Include(c => c.CartItems)
+            .ThenInclude(ci => ci.Product)
+            .FirstOrDefaultAsync(c => c.CustomerId == custId);
+
+            if (cart is null)
+            {
+                var customerId = User.Identity?.Name;
+
+                if (string.IsNullOrEmpty(customerId))
+                {
+                    customerId = Guid.NewGuid().ToString();
+                    var cookieOptions = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMonths(1),
+                        IsEssential = true
+                    };
+                    Response.Cookies.Append("customerId", customerId, cookieOptions);
+                }
+
+                cart = new Cart { CustomerId = customerId };
+                context.Carts.Add(cart);
+                await context.SaveChangesAsync();
+            }
+            return cart;
         }
     }
 }
