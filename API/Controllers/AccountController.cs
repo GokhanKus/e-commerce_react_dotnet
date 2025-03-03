@@ -22,7 +22,12 @@ namespace API.Controllers
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
             return result ?
-            Ok(new UserDto { Token = await _tokenService.GenerateToken(user), Name = user.Name! }) :
+            Ok(new UserDto
+            {
+                Token = await _tokenService.GenerateToken(user),
+                Name = user.Name!,
+                UserName = user.UserName!
+            }) :
             Unauthorized();
         }
 
@@ -32,12 +37,15 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            string userName = GenerateUserName(model);
+
             var user = new AppUser
             {
-                Name = model.Name,
+                Name = model.Name ?? "",
                 Email = model.Email,
-                UserName = model.UserName
+                UserName = userName
             };
+
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -46,6 +54,15 @@ namespace API.Controllers
             await _userManager.AddToRoleAsync(user, "Customer");
             return Created();
         }
+
+        private static string GenerateUserName(RegisterDto model)
+        {
+            var userNameBase = model.Email.Split('@')[0]; // @ işaretinden önceki kısmı al
+            var randomSuffix = Guid.NewGuid().ToString("N")[..8]; // 8 karakterlik rastgele bir değer
+            var userName = model.UserName ?? $"{userNameBase}{randomSuffix}";
+            return userName;
+        }
+
         [Authorize]
         [HttpGet("getuser")]
         public async Task<ActionResult<UserDto>> GetUser()
