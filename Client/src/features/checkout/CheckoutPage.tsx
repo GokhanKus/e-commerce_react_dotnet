@@ -1,10 +1,37 @@
-import { Paper, Grid2 } from "@mui/material";
+import { Paper, Grid2, Box, Step, StepLabel, Stepper, Button } from "@mui/material";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import Info from "./Info";
+import { useState } from "react";
+import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
+
+const steps = ["Teslimat Bilgileri", "Ödeme", "Sipariş Özeti"];
+
+function getStepContent(step: number) {
+    switch (step) {
+        case 0:
+            return <AddressForm />;
+        case 1:
+            return <PaymentForm />;
+        case 2:
+            return <Review />;
+        default:
+            throw new Error("Bilinmeyen bir step");
+    }
+}
 
 function CheckoutPage() {
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    function handleNext() {
+        setActiveStep(activeStep + 1);
+    }
+
+    function handlePrevious() {
+        setActiveStep(activeStep - 1);
+    }
 
     return (
         <Paper>
@@ -13,9 +40,46 @@ function CheckoutPage() {
                     <Info />
                 </Grid2>
                 <Grid2 size={8}>
-                    <AddressForm />
-                    <PaymentForm />
-                    <Review />
+                    <Box >
+                        <Stepper activeStep={activeStep} sx={{ height: 40 }}>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Box>
+                    <Box>
+                        {activeStep === steps.length ? (
+                            <h2>Sipariş tamamlandi.</h2>
+                        ) : (
+                            <>
+                                {getStepContent(activeStep)}
+                                <Box>
+                                    <Box sx={
+                                        [
+                                            {
+                                                display: "flex",
+                                            },
+                                            activeStep !== 0
+                                                ? { justifyContent: "space-between" }
+                                                : { justifyContent: "flex-end" }
+                                        ]
+                                    }>
+                                        {
+                                            activeStep !== 0 &&
+                                            <Button startIcon={<ChevronLeftRounded />} variant="contained"
+                                                onClick={handlePrevious}>Geri</Button>
+                                        }
+
+                                        <Button startIcon={<ChevronRightRounded />} variant="contained"
+                                            onClick={handleNext}>İleri</Button>
+                                    </Box>
+                                </Box>
+                            </>
+                        )}
+
+                    </Box>
                 </Grid2>
             </Grid2>
         </Paper>
