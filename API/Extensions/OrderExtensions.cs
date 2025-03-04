@@ -17,7 +17,7 @@ namespace API.Extensions
                 CustomerId = o.CustomerId,
                 AddresLine = o.AddresLine,
                 City = o.City,
-                DeliveryFree = o.DeliveryFree,
+                DeliveryFee = o.DeliveryFee,
                 FirstName = o.FirstName,
                 LastName = o.LastName,
                 OrderDate = o.OrderDate,
