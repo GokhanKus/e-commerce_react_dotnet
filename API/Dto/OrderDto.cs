@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entity;
 
-namespace API.Entity
+namespace API.Dto
 {
-    public class Order
+    public class OrderDto
     {
         public int Id { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
@@ -18,34 +19,19 @@ namespace API.Entity
         public string? AddresLine { get; set; }
         public string? CustomerId { get; set; }
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
-        public List<OrderItem> OrderItems { get; set; } = new();
+        public List<OrderItemDto> OrderItems { get; set; } = new();
         public decimal SubTotal { get; set; }
         public decimal DeliveryFree { get; set; }
-        public decimal GetTotal()
-        {
-            return SubTotal + DeliveryFree;
-        }
     }
 
-    public class OrderItem
+    public class OrderItemDto
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
-        public Order Order { get; set; } = null!;
         public int ProductId { get; set; }
-        public Product Product { get; set; } = null!;
         public string ProductName { get; set; } = null!;
         public string ProductImage { get; set; } = null!;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public void asd() { }
-    }
-
-    public enum OrderStatus
-    {
-        Pending,
-        Approved,
-        PaymentFailed,
-        Completed
     }
 }
