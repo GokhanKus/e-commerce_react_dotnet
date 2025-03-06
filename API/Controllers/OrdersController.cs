@@ -80,7 +80,7 @@ namespace API.Controllers
                 City = orderDto.City,
                 AddresLine = orderDto.AddresLine,
                 SubTotal = subTotal,
-                DeliveryFee = deliveryFee
+                DeliveryFee = deliveryFee,
             };
 
             context.Orders.Add(order);

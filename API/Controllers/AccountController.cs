@@ -37,7 +37,7 @@ namespace API.Controllers
                 context.Carts.Remove(cookieCart);
             }
 
-            userCart.CustomerId = model.Email;
+            userCart!.CustomerId = model.Email;
             await context.SaveChangesAsync();
 
             return Ok(new UserDto

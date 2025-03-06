@@ -76,7 +76,7 @@ function Header() {
                                             <Button id="user-button" onClick={handleMenuClick} endIcon={<KeyboardArrowDown />} sx={navStyles}>{user.name}</Button>
 
                                             <Menu id="user-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
-                                                <MenuItem>Orders</MenuItem>
+                                                <MenuItem component={Link} to="/orders">Orders</MenuItem>
                                                 <MenuItem onClick={() => {
                                                     dispatch(logout())
                                                     dispatch(clearCart())

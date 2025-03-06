@@ -13,6 +13,7 @@ import LoginPage from "../features/account/LoginPage";
 import RegisterPage from "../features/account/RegisterPage";
 import CheckoutPage from "../features/checkout/CheckoutPage";
 import AuthGuard from "./AuthGuard";
+import OrderList from "../features/orders/OrderList";
 
 
 export const router = createBrowserRouter([
@@ -22,7 +23,8 @@ export const router = createBrowserRouter([
         children: [
             { //korumak istedigimiz -login gerektiren- linklerimizi router icerisinde bu sekilde tanimlayabiliriz
                 element: <AuthGuard />, children: [
-                    { path: "checkout", element: <CheckoutPage /> }
+                    { path: "checkout", element: <CheckoutPage /> },
+                    { path: "orders", element: <OrderList /> }
                 ]
             },
             { path: "", element: <HomePage /> },
