@@ -15,7 +15,6 @@ import CheckoutPage from "../features/checkout/CheckoutPage";
 import AuthGuard from "./AuthGuard";
 import OrderList from "../features/orders/OrderList";
 
-
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -35,8 +34,6 @@ export const router = createBrowserRouter([
             { path: "cart", element: <ShoppingCartPage /> },
             { path: "error", element: <ErrorPage /> },
             { path: "server-error", element: <ServerError /> },
-
-
 
             { path: "not-found", element: <NotFound /> },
             { path: "login", element: <LoginPage /> },

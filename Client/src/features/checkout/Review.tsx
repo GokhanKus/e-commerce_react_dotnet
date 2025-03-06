@@ -19,7 +19,7 @@ function Review() {
                     <Typography gutterBottom sx={{ color: "text.secondary" }}>
                         {getValues("phone")}</Typography>
                     <Typography gutterBottom sx={{ color: "text.secondary" }}>
-                        {getValues("addressline")} / {getValues("city")} </Typography>
+                        {getValues("addresline")} / {getValues("city")} </Typography>
                 </div>
                 <div>
                     <Typography variant="subtitle2" gutterBottom
