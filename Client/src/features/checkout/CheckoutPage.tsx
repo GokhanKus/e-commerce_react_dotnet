@@ -5,6 +5,7 @@ import Review from "./Review";
 import Info from "./Info";
 import { useState } from "react";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
+import { FormProvider, useForm } from "react-hook-form";
 
 const steps = ["Teslimat Bilgileri", "Ödeme", "Sipariş Özeti"];
 
@@ -24,8 +25,10 @@ function getStepContent(step: number) {
 function CheckoutPage() {
 
     const [activeStep, setActiveStep] = useState(0);
+    const methods = useForm();
 
-    function handleNext() {
+    function handleNext(data: FieldValues) {
+        console.log(data);
         setActiveStep(activeStep + 1);
     }
 
@@ -34,55 +37,56 @@ function CheckoutPage() {
     }
 
     return (
-        <Paper>
-            <Grid2 container sx={{ p: 4 }} spacing={5}>
-                <Grid2 size={4}>
-                    <Info />
-                </Grid2>
-                <Grid2 size={8}>
-                    <Box >
-                        <Stepper activeStep={activeStep} sx={{ height: 40 }}>
-                            {steps.map((label) => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                    </Box>
-                    <Box>
-                        {activeStep === steps.length ? (
-                            <h2>Sipariş tamamlandi.</h2>
-                        ) : (
-                            <>
-                                {getStepContent(activeStep)}
-                                <Box>
-                                    <Box sx={
-                                        [
+        <FormProvider {...methods}>
+            <Paper>
+                <Grid2 container spacing={5}>
+                    <Grid2 size={4} sx={{ borderRight: "1px solid", borderColor: "divider", p: 3 }}>
+                        <Info />
+                    </Grid2>
+                    <Grid2 size={8} sx={{ p: 3 }}>
+                        <Box >
+                            <Stepper activeStep={activeStep} sx={{ height: 40, mb: 4 }}>
+                                {steps.map((label) => (
+                                    <Step key={label}>
+                                        <StepLabel>{label}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                        </Box>
+                        <Box>
+                            {activeStep === steps.length ? (
+                                <h2>Sipariş tamamlandi.</h2>
+                            ) : (
+                                <form onSubmit={methods.handleSubmit(handleNext)}>
+                                    {getStepContent(activeStep)}
+                                    <Box>
+                                        <Box sx={
+                                            [
+                                                {
+                                                    display: "flex",
+                                                },
+                                                activeStep !== 0
+                                                    ? { justifyContent: "space-between" }
+                                                    : { justifyContent: "flex-end" }
+                                            ]
+                                        }>
                                             {
-                                                display: "flex",
-                                            },
-                                            activeStep !== 0
-                                                ? { justifyContent: "space-between" }
-                                                : { justifyContent: "flex-end" }
-                                        ]
-                                    }>
-                                        {
-                                            activeStep !== 0 &&
-                                            <Button startIcon={<ChevronLeftRounded />} variant="contained"
-                                                onClick={handlePrevious}>Geri</Button>
-                                        }
+                                                activeStep !== 0 &&
+                                                <Button startIcon={<ChevronLeftRounded />} variant="contained"
+                                                    onClick={handlePrevious}>Geri</Button>
+                                            }
 
-                                        <Button startIcon={<ChevronRightRounded />} variant="contained"
-                                            onClick={handleNext}>İleri</Button>
+                                            <Button type="submit" startIcon={<ChevronRightRounded />} variant="contained">İleri</Button>
+                                        </Box>
                                     </Box>
-                                </Box>
-                            </>
-                        )}
+                                </form>
+                            )}
 
-                    </Box>
+                        </Box>
+                    </Grid2>
                 </Grid2>
-            </Grid2>
-        </Paper>
+            </Paper>
+        </FormProvider>
     );
 
 }
