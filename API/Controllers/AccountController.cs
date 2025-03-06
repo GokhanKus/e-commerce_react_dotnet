@@ -58,7 +58,7 @@ namespace API.Controllers
 
             var user = new AppUser
             {
-                Name = model.Name ?? "",
+                Name = !string.IsNullOrEmpty(model.Name) ? model.Name : userName,
                 Email = model.Email,
                 UserName = userName
             };
@@ -72,13 +72,7 @@ namespace API.Controllers
             return Created();
         }
 
-        private static string GenerateUserName(RegisterDto model)
-        {
-            var userNameBase = model.Email.Split('@')[0]; // @ işaretinden önceki kısmı al
-            var randomSuffix = Guid.NewGuid().ToString("N")[..8]; // 8 karakterlik rastgele bir değer
-            var userName = model.UserName ?? $"{userNameBase}{randomSuffix}";
-            return userName;
-        }
+        private static string GenerateUserName(RegisterDto model) => model.Email.Split('@')[0];
 
         [Authorize]
         [HttpGet("getuser")]
