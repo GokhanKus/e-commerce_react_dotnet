@@ -17,7 +17,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class OrdersController(AppDbContext context) : ControllerBase
     {
-        [HttpGet("GetOrders")]
+        [HttpGet()]
         public async Task<ActionResult<List<OrderDto>>> GetOrders()
         {
             return await context.Orders
@@ -27,7 +27,7 @@ namespace API.Controllers
                         .ToListAsync();
         }
 
-        [HttpGet("{id}", Name = "GetOrder")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto?>> GetOrder(int id)
         {
             return await context.Orders
@@ -37,7 +37,7 @@ namespace API.Controllers
                         .FirstOrDefaultAsync();
         }
 
-        [HttpPost("CreateOrder")]
+        [HttpPost()]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderDto orderDto)
         {
             var cart = await context.Carts
@@ -88,7 +88,7 @@ namespace API.Controllers
 
             var result = await context.SaveChangesAsync() > 0;
             return result ?
-             CreatedAtRoute(nameof(GetOrder), new { id = order.Id }, order.Id) :
+             CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order.Id) :
              BadRequest(new ProblemDetails { Title = "Problem getting order" });
         }
     }
