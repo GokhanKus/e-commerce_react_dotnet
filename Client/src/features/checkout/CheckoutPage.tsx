@@ -1,11 +1,11 @@
-import { Paper, Grid2, Box, Step, StepLabel, Stepper, Button } from "@mui/material";
+import { Paper, Grid2, Box, Step, StepLabel, Stepper, Button, Stack, Typography } from "@mui/material";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import Info from "./Info";
 import { useState } from "react";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 
 const steps = ["Teslimat Bilgileri", "Ödeme", "Sipariş Özeti"];
 
@@ -55,7 +55,19 @@ function CheckoutPage() {
                         </Box>
                         <Box>
                             {activeStep === steps.length ? (
-                                <h2>Sipariş tamamlandi.</h2>
+                                <Stack spacing={2}>
+                                    <Typography variant="h1">📦</Typography>
+                                    <Typography variant="h5">Teşekkür ederiz. Siparişinizi aldık</Typography>
+                                    <Typography variant="body1" sx={{ color: "text.secondary" }}>
+                                        Sipariş numaranız <strong>#1234</strong>. Siparişiniz onaylandığında size bir eposta göndereceğiz.
+                                    </Typography>
+                                    <Button
+                                        sx={{
+                                            alignSelf: "start",
+                                            width: { xs: "100%", sm: "auto" }
+                                        }}
+                                        variant="contained">Siparişleri Listele</Button>
+                                </Stack>
                             ) : (
                                 <form onSubmit={methods.handleSubmit(handleNext)}>
                                     {getStepContent(activeStep)}
