@@ -12,5 +12,11 @@ namespace API.Dto
         public string? Phone { get; set; }
         public string? City { get; set; }
         public string? AddresLine { get; set; }
+        public string CardName { get; set; } = null!;
+        public string CardNumber { get; set; } = null!;
+        public string CardExpireMonth { get; set; } = null!;
+        public string CardExpireYear { get; set; } = null!;
+        public string CardCvc { get; set; } = null!;
+
     }
 }

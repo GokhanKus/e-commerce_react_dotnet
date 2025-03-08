@@ -83,7 +83,9 @@ namespace API.Controllers
             };
 
             //payment
-            await ProcessPayment();
+            var paymentResult = await ProcessPayment(orderDto, cart);
+            order.ConversationId = paymentResult.ConversationId;
+            order.BasketId = paymentResult.BasketId;
 
             context.Orders.Add(order);
             context.Carts.Remove(cart);
@@ -93,7 +95,7 @@ namespace API.Controllers
              CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order.Id) :
              BadRequest(new ProblemDetails { Title = "Problem getting order" });
         }
-        private async Task<Payment> ProcessPayment()
+        private async Task<Payment> ProcessPayment(CreateOrderDto orderDto, Cart cart)
         {
             Options options = new Options();
             options.ApiKey = config["PaymentAPI:APIKey"];
@@ -102,85 +104,62 @@ namespace API.Controllers
 
             CreatePaymentRequest request = new CreatePaymentRequest();
             request.Locale = Locale.TR.ToString();
-            request.ConversationId = "123456789";
-            request.Price = "1";
-            request.PaidPrice = "1.2";
+            request.ConversationId = Guid.NewGuid().ToString();
+            request.Price = cart.CalculateTotal().ToString();
+            request.PaidPrice = cart.CalculateTotal().ToString();
             request.Currency = Currency.TRY.ToString();
             request.Installment = 1;
-            request.BasketId = "B67832";
+            request.BasketId = Guid.NewGuid().ToString();
             request.PaymentChannel = PaymentChannel.WEB.ToString();
             request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
 
             PaymentCard paymentCard = new PaymentCard();
-            paymentCard.CardHolderName = "John Doe";
-            paymentCard.CardNumber = "5528790000000008";
-            paymentCard.ExpireMonth = "12";
-            paymentCard.ExpireYear = "2030";
-            paymentCard.Cvc = "123";
+            paymentCard.CardHolderName = orderDto.CardName;
+            paymentCard.CardNumber = orderDto.CardNumber;
+            paymentCard.ExpireMonth = orderDto.CardExpireMonth;
+            paymentCard.ExpireYear = orderDto.CardExpireYear;
+            paymentCard.Cvc = orderDto.CardCvc;
             paymentCard.RegisterCard = 0;
             request.PaymentCard = paymentCard;
 
             Buyer buyer = new Buyer();
             buyer.Id = "BY789";
-            buyer.Name = "John";
-            buyer.Surname = "Doe";
-            buyer.GsmNumber = "+905350000000";
+            buyer.Name = orderDto.FirstName;
+            buyer.Surname = orderDto.LastName;
+            buyer.GsmNumber = orderDto.Phone;
             buyer.Email = "email@email.com";
             buyer.IdentityNumber = "74300864791";
             buyer.LastLoginDate = "2015-10-05 12:43:35";
             buyer.RegistrationDate = "2013-04-21 15:12:09";
-            buyer.RegistrationAddress = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
+            buyer.RegistrationAddress = orderDto.AddresLine;
             buyer.Ip = "85.34.78.112";
-            buyer.City = "Istanbul";
+            buyer.City = orderDto.City;
             buyer.Country = "Turkey";
-            buyer.ZipCode = "34732";
+            buyer.ZipCode = "99999";
             request.Buyer = buyer;
 
             Address shippingAddress = new Address();
-            shippingAddress.ContactName = "Jane Doe";
-            shippingAddress.City = "Istanbul";
+            shippingAddress.ContactName = orderDto.FirstName + " " + orderDto.LastName;
+            shippingAddress.City = orderDto.City;
             shippingAddress.Country = "Turkey";
-            shippingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
-            shippingAddress.ZipCode = "34742";
+            shippingAddress.Description = orderDto.AddresLine;
+            shippingAddress.ZipCode = "99999";
             request.ShippingAddress = shippingAddress;
-
-            Address billingAddress = new Address();
-            billingAddress.ContactName = "Jane Doe";
-            billingAddress.City = "Istanbul";
-            billingAddress.Country = "Turkey";
-            billingAddress.Description = "Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1";
-            billingAddress.ZipCode = "34742";
-            request.BillingAddress = billingAddress;
+            request.BillingAddress = shippingAddress;
 
             List<BasketItem> basketItems = new List<BasketItem>();
-            BasketItem firstBasketItem = new BasketItem();
-            firstBasketItem.Id = "BI101";
-            firstBasketItem.Name = "Binocular";
-            firstBasketItem.Category1 = "Collectibles";
-            firstBasketItem.Category2 = "Accessories";
-            firstBasketItem.ItemType = BasketItemType.PHYSICAL.ToString();
-            firstBasketItem.Price = "0.3";
-            basketItems.Add(firstBasketItem);
 
-            BasketItem secondBasketItem = new BasketItem();
-            secondBasketItem.Id = "BI102";
-            secondBasketItem.Name = "Game code";
-            secondBasketItem.Category1 = "Game";
-            secondBasketItem.Category2 = "Online Game Items";
-            secondBasketItem.ItemType = BasketItemType.VIRTUAL.ToString();
-            secondBasketItem.Price = "0.5";
-            basketItems.Add(secondBasketItem);
-
-            BasketItem thirdBasketItem = new BasketItem();
-            thirdBasketItem.Id = "BI103";
-            thirdBasketItem.Name = "Usb";
-            thirdBasketItem.Category1 = "Electronics";
-            thirdBasketItem.Category2 = "Usb / Cable";
-            thirdBasketItem.ItemType = BasketItemType.PHYSICAL.ToString();
-            thirdBasketItem.Price = "0.2";
-            basketItems.Add(thirdBasketItem);
+            foreach (var item in cart.CartItems)
+            {
+                BasketItem basketItem = new BasketItem();
+                basketItem.Id = item.Id.ToString();
+                basketItem.Name = item.Product.Name;
+                basketItem.Category1 = "Saat";
+                basketItem.ItemType = BasketItemType.PHYSICAL.ToString();
+                basketItem.Price = ((double)item.Product.Price * item.Quantity).ToString();
+                basketItems.Add(basketItem);
+            }
             request.BasketItems = basketItems;
-
             Payment payment = await Payment.Create(request, options);
             return payment;
         }

@@ -32,6 +32,10 @@ namespace API.Entity
 
             if (item.Quantity <= 0) CartItems.Remove(item);
         }
+        public double CalculateTotal()
+        {
+            return (double)CartItems.Sum(ci => ci.Product.Price * ci.Quantity);
+        }
     }
     public class CartItem
     {

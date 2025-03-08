@@ -9,42 +9,51 @@ function PaymentForm() {
 
             <Grid2 size={{ xs: 12, md: 6 }}>
                 <TextField
-                    {...register("card_name", { required: "Card name is required" })}
+                    {...register("cardname", { required: "Card name is required" })}
                     label="Enter card name"
                     fullWidth autoFocus
                     sx={{ mb: 2 }}
                     size="small"
-                    error={!!errors.card_name}></TextField>
+                    error={!!errors.cardname}></TextField>
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 6 }}>
                 <TextField
-                    {...register("card_number", { required: "Card number is required" })}
+                    {...register("cardnumber", { required: "Card number is required" })}
                     label="Enter card number"
                     fullWidth
                     sx={{ mb: 2 }}
                     size="small"
-                    error={!!errors.card_number}></TextField>
+                    error={!!errors.cardnumber}></TextField>
             </Grid2>
 
-            <Grid2 size={{ xs: 12, md: 6 }}>
+            <Grid2 size={{ xs: 6, md: 4 }}>
                 <TextField
-                    {...register("card_expiry_date", { required: "Expiry date is required" })}
-                    label="Enter expiry date"
+                    {...register("cardexpiremonth", { required: "Expire month is required" })}
+                    label="Enter expire month"
                     fullWidth
                     sx={{ mb: 2 }}
                     size="small"
-                    error={!!errors.card_expiry_date}></TextField>
+                    error={!!errors.cardexpirymonth}></TextField>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 4 }}>
+                <TextField
+                    {...register("cardexpireyear", { required: "Expire year is required" })}
+                    label="Enter expire year"
+                    fullWidth
+                    sx={{ mb: 2 }}
+                    size="small"
+                    error={!!errors.cardexpiryyear}></TextField>
             </Grid2>
 
-            <Grid2 size={{ xs: 12, md: 6 }}>
+            <Grid2 size={{ xs: 12, md: 4 }}>
                 <TextField
-                    {...register("card_cvv", { required: "Cvv is required" })}
+                    {...register("cardcvc", { required: "Cvv is required" })}
                     label="Enter cvv"
                     fullWidth
                     sx={{ mb: 2 }}
                     size="small"
-                    error={!!errors.card_cvv}></TextField>
+                    error={!!errors.cardcvc}></TextField>
             </Grid2>
 
         </Grid2>
